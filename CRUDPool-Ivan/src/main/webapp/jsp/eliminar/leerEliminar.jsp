@@ -20,11 +20,12 @@
                 ArrayList<Ave> aves = (ArrayList) request.getAttribute("aves");
                 for (Ave a : aves) {
             %>
-            <p><input type="checkbox" name="eliminar" value="<%=a.getAnilla()%>" id="<%=a.getEspecie()%>"/> <label for="<%=a.getEspecie()%>"><%=a.getEspecie()%></label></p>
+            <p><input type="checkbox" name="ave" value="<%=a.getAnilla()%>" id="<%=a.getEspecie()%>"/> <label for="<%=a.getEspecie()%>"><%=a.getEspecie()%></label></p>
                 <%
                     }
                 %>
             <input type="submit" name="eliminar" value="Enviar"/>
+            <input type="submit" name="cancelar" value="Cancelar"/>
         </form>
     </body>
 </html>

@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -30,7 +31,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "Realizar", urlPatterns = {"/realizar"})
 public class Realizar extends HttpServlet {
-
+    
     private DataSource pool = null;
     private Connection conexion = null;
     private Statement sentencia = null;
@@ -67,14 +68,14 @@ public class Realizar extends HttpServlet {
         Enumeration<String> nombres = request.getParameterNames();
         String nombre = null;
         String url = null;
-
+        
         try {
             Context initialContext = new InitialContext();
             pool = (DataSource) initialContext.lookup("java:comp/env/jdbc/pruebasjava");
-
+            
             try {
                 conexion = pool.getConnection();
-
+                
                 while (nombres.hasMoreElements()) {
                     nombre = nombres.nextElement();
                     switch (nombre) {
@@ -83,24 +84,24 @@ public class Realizar extends HttpServlet {
                             url = "jsp/insertar/insertar.jsp";
                             break;
                         case "actualizar":
-                            try{
-                               actualizar(request, response);
-                               url = "jsp/actualizar/actualizar.jsp";
-                            }catch(NullPointerException ex){
+                            try {
+                                actualizar(request, response);
+                                url = "jsp/actualizar/actualizar.jsp";
+                            } catch (NullPointerException ex) {
                                 ex.printStackTrace();
-                                url="index.html";
+                                url = "index.html";
                             }
-                            
-                            
                             break;
                         case "eliminar":
+                            eliminar(request, response);
+                            url = "jsp/eliminar/eliminar.jsp";
                             break;
                         case "cancelar":
                             url = "index.html";
                             break;
                     }
                 }
-
+                
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -109,7 +110,7 @@ public class Realizar extends HttpServlet {
         }
         request.getRequestDispatcher(url).forward(request, response);
     }
-
+    
     private void insertar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ave = new Ave();
         Enumeration<String> nombres = request.getParameterNames();
@@ -120,7 +121,7 @@ public class Realizar extends HttpServlet {
         HttpSession sesion = request.getSession();
         sesion.setAttribute("ave", ave);
     }
-
+    
     private void actualizar(HttpServletRequest request, HttpServletResponse response) throws SQLException {
         ave = new Ave();
         String anilla = request.getParameter("anilla");
@@ -135,5 +136,30 @@ public class Realizar extends HttpServlet {
         ave.setFecha(resultado.getString(4));
         request.setAttribute("ave", ave);
     }
-
+    
+    private void eliminar(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+        ArrayList<Ave> aves = new ArrayList<Ave>();
+        String[] datos = request.getParameterValues("ave");
+        sql = "select * from pajaros where anilla=?";
+        HttpSession sesion=request.getSession();
+        for (int d = 0; d < datos.length; d++) {
+            ave=new Ave();
+            preparada = conexion.prepareStatement(sql);
+            preparada.setString(1, datos[d]);
+            resultado = preparada.executeQuery();
+            while (resultado.next()) {                
+                ave.setAnilla(resultado.getString(1));
+                ave.setEspecie(resultado.getString(2));
+                ave.setLugar(resultado.getString(3));
+                ave.setFecha(resultado.getString(4));
+                aves.add(ave);
+            }
+            resultado.close();
+            preparada.close();
+        }
+        conexion.close();
+        request.setAttribute("aves", aves);
+        sesion.setAttribute("aves", aves);
+    }
+    
 }

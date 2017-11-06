@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.*;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -58,7 +59,7 @@ public class Concluir extends HttpServlet {
         String url = null;
         HttpSession sesion = request.getSession();
         Ave ave;
-
+        ArrayList<Ave> aves=null;
         DataSource pool = null;
         Connection conexion = null;
         Statement sentencia = null;
@@ -106,8 +107,20 @@ public class Concluir extends HttpServlet {
                             preparada.close();
                             conexion.close();
                             break;
+                        case "eliminar":
+                            sesion=request.getSession();
+                            aves=(ArrayList)sesion.getAttribute("aves");
+                            sql="delete from pajaros where anilla=?";                            
+                            for(Ave a:aves){
+                                preparada=conexion.prepareStatement(sql);
+                                preparada.setString(1, a.getAnilla());
+                                preparada.executeUpdate();
+                                preparada.close();
+                            }
+                            conexion.close();
+                            url="jsp/eliminar/finEliminar.jsp";
+                            break;
                         case "cancelar":
-                            System.out.println("cancelar");
                             url = "index.html";
                             break;
                     }
