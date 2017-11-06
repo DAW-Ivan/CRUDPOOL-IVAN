@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CRUD Pool Ivan</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h1>¿Qué desea hacer?</h1>
+        <form action="operar" method="post">
+            <p>
+                <input type="radio" name="opcion" value="in" id="in" checked/>
+                <label for="in">Insertar</label>
+            </p>
+            <p>
+                <input type="radio" name="opcion" value="ac" id="ac"/>
+                <label for="ac">Actualizar</label>
+            </p>
+            <p>
+                <input type="radio" name="opcion" value="el" id="el"/>
+                <label for="el">Eliminar</label>
+            </p>
+            <p>
+                <input type="radio" name="opcion" value="mo" id="mo"/>
+                <label for="mo">Mostrar</label>
+            </p>
+            <input type="submit" name="enviar" value="Elegir"/>
+        </form>
+    </body>
+</html>
