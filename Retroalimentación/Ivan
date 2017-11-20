@@ -1,0 +1,3 @@
+Las anillas no son auto_increment y pueden valer lo que sea con 3 caracteres. Captura insertar.
+Se queda colgado en actualizar. Captura actualizar.
+Error de ejecución al actualizar y dejar campos vacíos. Captura actualizar campos vacios
